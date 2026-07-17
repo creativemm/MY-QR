@@ -28,46 +28,46 @@
         
         <div id="generate-section">
             <div class="template-selector">
-                <label for="qr-type">QR အမျိုးအစား - </label>
+                <label for="qr-type">QR code Type</label>
                 <select id="qr-type">
-                    <option value="text">စာသား / လင့်ခ်</option>
-                    <option value="vcard">လိပ်စာကတ် (vCard)</option>
-                    <option value="wifi">WiFi ချိတ်ဆက်ရန်</option>
+                    <option value="text">Text or URL</option>
+                    <option value="vcard">Contact cards (vCard)</option>
+                    <option value="wifi">Connect to WI-FI</option>
                 </select>
             </div>
 
             <div id="input-text-group" class="input-wrapper">
-                <input type="text" id="qr-input" placeholder="စာသား သို့မဟုတ် လင့်ခ်ထည့်ပါ">
+                <input type="text" id="qr-input" placeholder="Enter Text or URL.">
                 <span id="clear-btn" class="clear-icon" title="Clear">&times;</span>
             </div>
 
             <div id="input-vcard-group" style="display: none;">
-                <input type="text" id="vcard-name" class="multi-input" placeholder="အမည် (Name)">
-                <input type="text" id="vcard-phone" class="multi-input" placeholder="ဖုန်းနံပါတ် (Phone)">
-                <input type="email" id="vcard-email" class="multi-input" placeholder="အီးမေးလ် (Email)">
-                <input type="text" id="vcard-company" class="multi-input" placeholder="ကုမ္ပဏီ / ရာထူး (Company)">
+                <input type="text" id="vcard-name" class="multi-input" placeholder="Name">
+                <input type="text" id="vcard-phone" class="multi-input" placeholder="Phone">
+                <input type="email" id="vcard-email" class="multi-input" placeholder="Email">
+                <input type="text" id="vcard-company" class="multi-input" placeholder="Company/Position">
             </div>
 
             <div id="input-wifi-group" style="display: none;">
-                <input type="text" id="wifi-ssid" class="multi-input" placeholder="WiFi အမည် (SSID)">
+                <input type="text" id="wifi-ssid" class="multi-input" placeholder="WiFi Name (SSID)">
                 <input type="text" id="wifi-pass" class="multi-input" placeholder="Password">
                 <select id="wifi-type" class="multi-input">
-                    <option value="WPA">WPA/WPA2 (အများဆုံးသုံးသည်)</option>
+                    <option value="WPA">WPA/WPA2 (Recommended)</option>
                     <option value="WEP">WEP</option>
-                    <option value="nopass">Password မလိုပါ</option>
+                    <option value="nopass">NO Password required</option>
                 </select>
             </div>
             
             <div class="color-picker-group">
-                <label for="qr-color">QR Code အရောင် - </label>
+                <label for="qr-color">QR Code Color</label>
                 <input type="color" id="qr-color" value="#000000">
             </div>
 
             <div class="template-selector">
-                <label for="qr-frame-style">Frame ပုံစံ - </label>
+                <label for="qr-frame-style">Frame Style</label>
                 <select id="qr-frame-style">
-                    <option value="none">မပါပါ</option>
-                    <option value="scan-me">"Scan Me" ဘောင်</option>
+                    <option value="none">None</option>
+                    <option value="scan-me">Scan Me</option>
                 </select>
             </div>
 
@@ -85,7 +85,7 @@
         </div>
 
         <div id="scan-section" style="display: none;">
-            <button id="switch-camera-btn" class="secondary-btn" style="margin-bottom: 15px;">🔄 ကင်မရာ ပြောင်းရန်</button>
+            <button id="switch-camera-btn" class="secondary-btn" style="margin-bottom: 15px;">🔄 Switch Camera</button>
             <div id="reader"></div>
             <div id="scan-result-box" style="display: none;">
                 <p><strong>Scanned Result:</strong></p>

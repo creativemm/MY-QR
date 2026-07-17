@@ -22,11 +22,11 @@ const scanSection = document.getElementById("scan-section");
 const scanResultBox = document.getElementById("scan-result-box");
 const scanResultLink = document.getElementById("scan-result-link");
 const copyBtn = document.getElementById("copy-btn");
+const openLinkBtn = document.getElementById("open-link-btn"); // Open Link ခလုတ်
 const switchCameraBtn = document.getElementById("switch-camera-btn");
 
-// --- Camera အတွက် ပြင်ဆင်ချက် ---
 let html5QrCode;
-let currentFacingMode = "environment"; // အနောက်ကင်မရာ (Rear Camera) ကို ပုံသေထားမည်
+let currentFacingMode = "environment"; 
 
 themeToggle.addEventListener("change", () => {
     if (themeToggle.checked) document.body.classList.add("dark-mode");
@@ -51,7 +51,7 @@ generateBtn.addEventListener("click", () => {
 
         if (qrType.value === "text") {
             finalData = qrInput.value.trim();
-            if (finalData === "") { alert("Enter text or URL!"); return; }
+            if (finalData === "") { alert("စာသား သို့မဟုတ် လင့်ခ် ထည့်ပါ!"); return; }
             try {
                 let urlString = finalData;
                 if (!urlString.startsWith('http://') && !urlString.startsWith('https://')) {
@@ -67,20 +67,18 @@ generateBtn.addEventListener("click", () => {
             let email = document.getElementById("vcard-email").value.trim();
             let company = document.getElementById("vcard-company").value.trim();
             
-            if (name === "" || phone === "") { alert("Enter name and phone number!"); return; }
+            if (name === "" || phone === "") { alert("အမည်နှင့် ဖုန်းနံပါတ် ထည့်ပါ!"); return; }
             finalData = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nORG:${company}\nTEL:${phone}\nEMAIL:${email}\nEND:VCARD`;
-            logoUrl = null; 
-            qrLevel = QRCode.CorrectLevel.M;
+            logoUrl = null; qrLevel = QRCode.CorrectLevel.M;
         } 
         else if (qrType.value === "wifi") {
             let ssid = document.getElementById("wifi-ssid").value.trim();
             let pass = document.getElementById("wifi-pass").value.trim();
             let type = document.getElementById("wifi-type").value;
             
-            if (ssid === "") { alert("Enter WiFi name!"); return; }
+            if (ssid === "") { alert("WiFi အမည် ထည့်ပါ!"); return; }
             finalData = `WIFI:S:${ssid};T:${type};P:${pass};;`;
-            logoUrl = null;
-            qrLevel = QRCode.CorrectLevel.M;
+            logoUrl = null; qrLevel = QRCode.CorrectLevel.M;
         }
 
         qrContainer.innerHTML = "";
@@ -112,24 +110,22 @@ generateBtn.addEventListener("click", () => {
         setTimeout(() => { if (downloadBtn) downloadBtn.style.display = "block"; }, 300);
     } catch (error) {
         console.error(error);
-        alert("An error occurred!");
+        alert("မှားယွင်းမှုရှိနေပါသည်။");
     }
 });
 
-// --- Tab များနှိပ်လျှင် Camera အဖွင့်/အပိတ် ပြုလုပ်ခြင်း ---
 tabGenerate.addEventListener("click", () => {
     tabGenerate.classList.add("active"); tabScan.classList.remove("active");
     generateSection.style.display = "block"; scanSection.style.display = "none";
-    stopScanner(); // Generate Tab ကိုသွားလျှင် ကင်မရာပိတ်မည်
+    stopScanner();
 });
 
 tabScan.addEventListener("click", () => {
     tabScan.classList.add("active"); tabGenerate.classList.remove("active");
     generateSection.style.display = "none"; scanSection.style.display = "block";
-    startScanner(); // Scan Tab ကိုသွားလျှင် ကင်မရာဖွင့်မည်
+    startScanner();
 });
 
-// --- Camera ကို ထိန်းချုပ်မည့် Functions များ ---
 function startScanner() {
     if (!html5QrCode) {
         html5QrCode = new Html5Qrcode("reader");
@@ -141,7 +137,6 @@ function startScanner() {
         onScanFailure
     ).catch(err => {
         console.error("Camera Error: ", err);
-        // အနောက်ကင်မရာ မရှိပါက အရှေ့ကင်မရာကို အလိုလို ပြောင်းပေးရန်
         if (currentFacingMode === "environment") {
             currentFacingMode = "user";
             startScanner();
@@ -151,39 +146,40 @@ function startScanner() {
 
 function stopScanner() {
     if (html5QrCode) {
-        html5QrCode.stop().then(() => {
-            html5QrCode.clear();
-        }).catch(err => {
-            console.error("Failed to stop camera.", err);
-        });
+        html5QrCode.stop().then(() => { html5QrCode.clear(); }).catch(err => {});
     }
 }
 
-// ကင်မရာ ပြောင်းရန် ခလုတ်နှိပ်လျှင် (Switch Camera)
 switchCameraBtn.addEventListener("click", () => {
     if (html5QrCode) {
         html5QrCode.stop().then(() => {
-            // လက်ရှိက environment ဆို user ပြောင်း၊ user ဆို environment ပြောင်းမည်
             currentFacingMode = currentFacingMode === "environment" ? "user" : "environment";
             startScanner();
-        }).catch(err => {
-            console.error("Error stopping camera before switch.", err);
-        });
+        }).catch(err => {});
     }
 });
 
 function onScanSuccess(decodedText) {
     scanResultBox.style.display = "block"; 
+    
+    // URL ဟုတ်မဟုတ် စစ်ဆေးခြင်း
     if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
-        scanResultLink.href = decodedText; scanResultLink.textContent = decodedText;
+        scanResultLink.href = decodedText; 
+        scanResultLink.textContent = decodedText;
+        // URL ဖြစ်ပါက Open Link ခလုတ်ကို ဖော်ပြမည်
+        openLinkBtn.style.display = "block";
+        openLinkBtn.onclick = () => { window.open(decodedText, '_blank'); };
     } else {
-        scanResultLink.removeAttribute("href"); scanResultLink.textContent = decodedText;
+        scanResultLink.removeAttribute("href"); 
+        scanResultLink.textContent = decodedText;
+        // ရိုးရိုးစာသားဖြစ်ပါက Open Link ခလုတ်ကို ဖျောက်ထားမည်
+        openLinkBtn.style.display = "none";
     }
 }
 function onScanFailure(error) {}
 
 copyBtn.addEventListener("click", () => {
-    navigator.clipboard.writeText(scanResultLink.textContent).then(() => { alert("Copied!"); });
+    navigator.clipboard.writeText(scanResultLink.textContent).then(() => { alert("Copy ကူးယူပြီးပါပြီ!"); });
 });
 
 clearBtn.addEventListener("click", () => {
@@ -201,7 +197,6 @@ downloadBtn.addEventListener("click", () => {
     downloadLink.click();
 });
 
-// Canvas Background
 const canvas = document.getElementById('bg-canvas');
 const ctx = canvas.getContext('2d');
 let width = canvas.width = window.innerWidth;

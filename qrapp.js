@@ -51,7 +51,7 @@ generateBtn.addEventListener("click", () => {
 
         if (qrType.value === "text") {
             finalData = qrInput.value.trim();
-            if (finalData === "") { alert("စာသား သို့မဟုတ် လင့်ခ် ထည့်ပါ!"); return; }
+            if (finalData === "") { alert("Enter Text or Link!"); return; }
             try {
                 let urlString = finalData;
                 if (!urlString.startsWith('http://') && !urlString.startsWith('https://')) {
@@ -67,7 +67,7 @@ generateBtn.addEventListener("click", () => {
             let email = document.getElementById("vcard-email").value.trim();
             let company = document.getElementById("vcard-company").value.trim();
             
-            if (name === "" || phone === "") { alert("အမည်နှင့် ဖုန်းနံပါတ် ထည့်ပါ!"); return; }
+            if (name === "" || phone === "") { alert("Enter Name and Phone Number!"); return; }
             finalData = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nORG:${company}\nTEL:${phone}\nEMAIL:${email}\nEND:VCARD`;
             logoUrl = null; qrLevel = QRCode.CorrectLevel.M;
         } 
@@ -76,7 +76,7 @@ generateBtn.addEventListener("click", () => {
             let pass = document.getElementById("wifi-pass").value.trim();
             let type = document.getElementById("wifi-type").value;
             
-            if (ssid === "") { alert("WiFi အမည် ထည့်ပါ!"); return; }
+            if (ssid === "") { alert("Enter WI-FI Name!"); return; }
             finalData = `WIFI:S:${ssid};T:${type};P:${pass};;`;
             logoUrl = null; qrLevel = QRCode.CorrectLevel.M;
         }
@@ -110,7 +110,7 @@ generateBtn.addEventListener("click", () => {
         setTimeout(() => { if (downloadBtn) downloadBtn.style.display = "block"; }, 300);
     } catch (error) {
         console.error(error);
-        alert("မှားယွင်းမှုရှိနေပါသည်။");
+        alert("An error occurred while generating the QR code. Please try again.");
     }
 });
 
@@ -179,7 +179,7 @@ function onScanSuccess(decodedText) {
 function onScanFailure(error) {}
 
 copyBtn.addEventListener("click", () => {
-    navigator.clipboard.writeText(scanResultLink.textContent).then(() => { alert("Copy ကူးယူပြီးပါပြီ!"); });
+    navigator.clipboard.writeText(scanResultLink.textContent).then(() => { alert("Copied!"); });
 });
 
 clearBtn.addEventListener("click", () => {

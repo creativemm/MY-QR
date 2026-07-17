@@ -29,16 +29,16 @@
         <div id="generate-section">
             
             <div class="template-selector">
-                <label for="qr-type">QR Code Type</label>
+                <label for="qr-type">QR code Type </label>
                 <select id="qr-type">
-                    <option value="text">Text / Link</option>
+                    <option value="text">Text / URL</option>
                     <option value="vcard">Contact Card (vCard)</option>
-                    <option value="wifi">Connect to Wi-Fi</option>
+                    <option value="wifi">Connect to WiFi</option>
                 </select>
             </div>
 
             <div id="input-text-group" class="input-wrapper">
-                <input type="text" id="qr-input" placeholder="Enter text or link">
+                <input type="text" id="qr-input" placeholder="Enter text or URL">
                 <span id="clear-btn" class="clear-icon" title="Clear">&times;</span>
             </div>
 
@@ -46,16 +46,16 @@
                 <input type="text" id="vcard-name" class="multi-input" placeholder="Name">
                 <input type="text" id="vcard-phone" class="multi-input" placeholder="Phone">
                 <input type="email" id="vcard-email" class="multi-input" placeholder="Email">
-                <input type="text" id="vcard-company" class="multi-input" placeholder="Company / Position">
+                <input type="text" id="vcard-company" class="multi-input" placeholder="Company/Position">
             </div>
 
             <div id="input-wifi-group" style="display: none;">
-                <input type="text" id="wifi-ssid" class="multi-input" placeholder="Wi-Fi Name (SSID)">
+                <input type="text" id="wifi-ssid" class="multi-input" placeholder="WiFi Name (SSID)">
                 <input type="text" id="wifi-pass" class="multi-input" placeholder="Password">
                 <select id="wifi-type" class="multi-input">
                     <option value="WPA">WPA/WPA2 (Recommended)</option>
                     <option value="WEP">WEP</option>
-                    <option value="nopass">No password required</option>
+                    <option value="nopass">No Password Required</option>
                 </select>
             </div>
             
@@ -85,7 +85,9 @@
             <button id="download-btn" style="display: none;">Download QR</button>
         </div>
 
+        <!-- Scan ဖတ်မည့် အပိုင်း (ပြင်ဆင်ထားသည်) -->
         <div id="scan-section" style="display: none;">
+            <button id="switch-camera-btn" class="secondary-btn" style="margin-bottom: 15px;">🔄 Switch Camera</button>
             <div id="reader"></div>
             <div id="scan-result-box" style="display: none;">
                 <p><strong>Scanned Result:</strong></p>

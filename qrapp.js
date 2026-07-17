@@ -12,7 +12,6 @@ const inputWifiGroup = document.getElementById("input-wifi-group");
 const qrInput = document.getElementById("qr-input");
 const clearBtn = document.getElementById("clear-btn");
 
-// Frame Elements
 const qrFrameStyle = document.getElementById("qr-frame-style");
 const qrOuterFrame = document.getElementById("qr-outer-frame");
 
@@ -23,7 +22,11 @@ const scanSection = document.getElementById("scan-section");
 const scanResultBox = document.getElementById("scan-result-box");
 const scanResultLink = document.getElementById("scan-result-link");
 const copyBtn = document.getElementById("copy-btn");
-let html5QrcodeScanner;
+const switchCameraBtn = document.getElementById("switch-camera-btn");
+
+// --- Camera အတွက် ပြင်ဆင်ချက် ---
+let html5QrCode;
+let currentFacingMode = "environment"; // အနောက်ကင်မရာ (Rear Camera) ကို ပုံသေထားမည်
 
 themeToggle.addEventListener("change", () => {
     if (themeToggle.checked) document.body.classList.add("dark-mode");
@@ -48,7 +51,7 @@ generateBtn.addEventListener("click", () => {
 
         if (qrType.value === "text") {
             finalData = qrInput.value.trim();
-            if (finalData === "") { alert("Enter text or link!"); return; }
+            if (finalData === "") { alert("Enter text or URL!"); return; }
             try {
                 let urlString = finalData;
                 if (!urlString.startsWith('http://') && !urlString.startsWith('https://')) {
@@ -74,7 +77,7 @@ generateBtn.addEventListener("click", () => {
             let pass = document.getElementById("wifi-pass").value.trim();
             let type = document.getElementById("wifi-type").value;
             
-            if (ssid === "") { alert("Enter Wi-Fi Name!"); return; }
+            if (ssid === "") { alert("Enter WiFi name!"); return; }
             finalData = `WIFI:S:${ssid};T:${type};P:${pass};;`;
             logoUrl = null;
             qrLevel = QRCode.CorrectLevel.M;
@@ -91,10 +94,9 @@ generateBtn.addEventListener("click", () => {
             qrLogo.style.display = "none"; 
         }
 
-        // --- Frame လေးကို အသက်သွင်းခြင်း ---
         if (qrFrameStyle.value === "scan-me") {
             qrOuterFrame.className = "frame-scan-me";
-            qrOuterFrame.style.backgroundColor = selectedColor; // QR အရောင်နဲ့ Frame တူအောင်လုပ်ခြင်း
+            qrOuterFrame.style.backgroundColor = selectedColor; 
         } else {
             qrOuterFrame.className = "frame-none";
             qrOuterFrame.style.backgroundColor = "transparent";
@@ -110,22 +112,63 @@ generateBtn.addEventListener("click", () => {
         setTimeout(() => { if (downloadBtn) downloadBtn.style.display = "block"; }, 300);
     } catch (error) {
         console.error(error);
-        alert("Error");
+        alert("An error occurred!");
     }
 });
 
+// --- Tab များနှိပ်လျှင် Camera အဖွင့်/အပိတ် ပြုလုပ်ခြင်း ---
 tabGenerate.addEventListener("click", () => {
     tabGenerate.classList.add("active"); tabScan.classList.remove("active");
     generateSection.style.display = "block"; scanSection.style.display = "none";
-    if (html5QrcodeScanner) { html5QrcodeScanner.clear(); html5QrcodeScanner = null; }
+    stopScanner(); // Generate Tab ကိုသွားလျှင် ကင်မရာပိတ်မည်
 });
 
 tabScan.addEventListener("click", () => {
     tabScan.classList.add("active"); tabGenerate.classList.remove("active");
     generateSection.style.display = "none"; scanSection.style.display = "block";
-    if (!html5QrcodeScanner) {
-        html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: { width: 250, height: 250 } }, false);
-        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    startScanner(); // Scan Tab ကိုသွားလျှင် ကင်မရာဖွင့်မည်
+});
+
+// --- Camera ကို ထိန်းချုပ်မည့် Functions များ ---
+function startScanner() {
+    if (!html5QrCode) {
+        html5QrCode = new Html5Qrcode("reader");
+    }
+    html5QrCode.start(
+        { facingMode: currentFacingMode },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        onScanSuccess,
+        onScanFailure
+    ).catch(err => {
+        console.error("Camera Error: ", err);
+        // အနောက်ကင်မရာ မရှိပါက အရှေ့ကင်မရာကို အလိုလို ပြောင်းပေးရန်
+        if (currentFacingMode === "environment") {
+            currentFacingMode = "user";
+            startScanner();
+        }
+    });
+}
+
+function stopScanner() {
+    if (html5QrCode) {
+        html5QrCode.stop().then(() => {
+            html5QrCode.clear();
+        }).catch(err => {
+            console.error("Failed to stop camera.", err);
+        });
+    }
+}
+
+// ကင်မရာ ပြောင်းရန် ခလုတ်နှိပ်လျှင် (Switch Camera)
+switchCameraBtn.addEventListener("click", () => {
+    if (html5QrCode) {
+        html5QrCode.stop().then(() => {
+            // လက်ရှိက environment ဆို user ပြောင်း၊ user ဆို environment ပြောင်းမည်
+            currentFacingMode = currentFacingMode === "environment" ? "user" : "environment";
+            startScanner();
+        }).catch(err => {
+            console.error("Error stopping camera before switch.", err);
+        });
     }
 });
 
@@ -140,20 +183,19 @@ function onScanSuccess(decodedText) {
 function onScanFailure(error) {}
 
 copyBtn.addEventListener("click", () => {
-    navigator.clipboard.writeText(scanResultLink.textContent).then(() => { alert("Copy ကူးယူပြီးပါပြီ!"); });
+    navigator.clipboard.writeText(scanResultLink.textContent).then(() => { alert("Copied!"); });
 });
 
 clearBtn.addEventListener("click", () => {
     qrInput.value = ""; qrContainer.innerHTML = ""; 
     downloadBtn.style.display = "none"; qrColorInput.value = "#000000"; qrLogo.style.display = "none";
-    qrOuterFrame.className = "frame-none"; qrOuterFrame.style.backgroundColor = "transparent"; // Frame ပါ ဖျက်မည်
+    qrOuterFrame.className = "frame-none"; qrOuterFrame.style.backgroundColor = "transparent";
 });
 
 downloadBtn.addEventListener("click", () => {
     let qrImage = qrContainer.querySelector("img"); let qrCanvas = qrContainer.querySelector("canvas");
     let downloadLink = document.createElement("a"); downloadLink.download = "My_QRCode.png"; 
     
-    // (မှတ်ချက် - Download နှိပ်လျှင် CSS Frame မပါဘဲ မူလ QR Code နှင့် Logo ကိုသာ သိမ်းမည်)
     if (qrImage && qrImage.src) downloadLink.href = qrImage.src;
     else if (qrCanvas) downloadLink.href = qrCanvas.toDataURL("image/png");
     downloadLink.click();

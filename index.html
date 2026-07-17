@@ -27,48 +27,47 @@
         </div>
         
         <div id="generate-section">
-            
             <div class="template-selector">
-                <label for="qr-type">QR code Type </label>
+                <label for="qr-type">QR အမျိုးအစား - </label>
                 <select id="qr-type">
-                    <option value="text">Text / URL</option>
-                    <option value="vcard">Contact Card (vCard)</option>
-                    <option value="wifi">Connect to WiFi</option>
+                    <option value="text">စာသား / လင့်ခ်</option>
+                    <option value="vcard">လိပ်စာကတ် (vCard)</option>
+                    <option value="wifi">WiFi ချိတ်ဆက်ရန်</option>
                 </select>
             </div>
 
             <div id="input-text-group" class="input-wrapper">
-                <input type="text" id="qr-input" placeholder="Enter text or URL">
+                <input type="text" id="qr-input" placeholder="စာသား သို့မဟုတ် လင့်ခ်ထည့်ပါ">
                 <span id="clear-btn" class="clear-icon" title="Clear">&times;</span>
             </div>
 
             <div id="input-vcard-group" style="display: none;">
-                <input type="text" id="vcard-name" class="multi-input" placeholder="Name">
-                <input type="text" id="vcard-phone" class="multi-input" placeholder="Phone">
-                <input type="email" id="vcard-email" class="multi-input" placeholder="Email">
-                <input type="text" id="vcard-company" class="multi-input" placeholder="Company/Position">
+                <input type="text" id="vcard-name" class="multi-input" placeholder="အမည် (Name)">
+                <input type="text" id="vcard-phone" class="multi-input" placeholder="ဖုန်းနံပါတ် (Phone)">
+                <input type="email" id="vcard-email" class="multi-input" placeholder="အီးမေးလ် (Email)">
+                <input type="text" id="vcard-company" class="multi-input" placeholder="ကုမ္ပဏီ / ရာထူး (Company)">
             </div>
 
             <div id="input-wifi-group" style="display: none;">
-                <input type="text" id="wifi-ssid" class="multi-input" placeholder="WiFi Name (SSID)">
+                <input type="text" id="wifi-ssid" class="multi-input" placeholder="WiFi အမည် (SSID)">
                 <input type="text" id="wifi-pass" class="multi-input" placeholder="Password">
                 <select id="wifi-type" class="multi-input">
-                    <option value="WPA">WPA/WPA2 (Recommended)</option>
+                    <option value="WPA">WPA/WPA2 (အများဆုံးသုံးသည်)</option>
                     <option value="WEP">WEP</option>
-                    <option value="nopass">No Password Required</option>
+                    <option value="nopass">Password မလိုပါ</option>
                 </select>
             </div>
             
             <div class="color-picker-group">
-                <label for="qr-color">QR Code Color</label>
+                <label for="qr-color">QR Code အရောင် - </label>
                 <input type="color" id="qr-color" value="#000000">
             </div>
 
             <div class="template-selector">
-                <label for="qr-frame-style">Frame Style</label>
+                <label for="qr-frame-style">Frame ပုံစံ - </label>
                 <select id="qr-frame-style">
-                    <option value="none">None</option>
-                    <option value="scan-me">Scan Me</option>
+                    <option value="none">မပါပါ</option>
+                    <option value="scan-me">"Scan Me" ဘောင်</option>
                 </select>
             </div>
 
@@ -85,14 +84,19 @@
             <button id="download-btn" style="display: none;">Download QR</button>
         </div>
 
-        <!-- Scan ဖတ်မည့် အပိုင်း (ပြင်ဆင်ထားသည်) -->
         <div id="scan-section" style="display: none;">
-            <button id="switch-camera-btn" class="secondary-btn" style="margin-bottom: 15px;">🔄 Switch Camera</button>
+            <button id="switch-camera-btn" class="secondary-btn" style="margin-bottom: 15px;">🔄 ကင်မရာ ပြောင်းရန်</button>
             <div id="reader"></div>
             <div id="scan-result-box" style="display: none;">
                 <p><strong>Scanned Result:</strong></p>
-                <a id="scan-result-link" href="#" target="_blank"></a>
-                <button id="copy-btn" class="secondary-btn" style="margin-top: 10px;">Copy Text</button>
+                <a id="scan-result-link" href="#" target="_blank" style="word-break: break-all; display: block; margin-bottom: 15px;"></a>
+                
+                <!-- ခလုတ် ၂ ခုကို ဘေးတိုက်ထားရန် Flex သုံးထားပါသည် -->
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button id="copy-btn" class="secondary-btn">Copy</button>
+                    <!-- လင့်ခ်ဖြစ်မှသာ ပေါ်လာမည့် Open Link ခလုတ် -->
+                    <button id="open-link-btn" style="display: none; background-color: #28a745;">🌐 Open Link</button>
+                </div>
             </div>
         </div>
     </div>
